@@ -1,14 +1,25 @@
-# Knative Eventing Sample Source
+# time source poc
 
-[![GoDoc](https://godoc.org/knative.dev/kamelet-source?status.svg)](https://godoc.org/knative.dev/kamelet-source)
-[![Go Report Card](https://goreportcard.com/badge/knative/kamelet-source)](https://goreportcard.com/report/knative/kamelet-source)
+```
+ko apply -f config/
+```
 
-Knative Eventing `kamelet-source` defines a simple source that transforms events
-from an HTTP server into CloudEvents and demonstrates the canonical style in
-which Knative Eventing writes sources.
+```
+kubectl apply -f - <<EOF
+apiVersion: samples.knative.dev/v1alpha1
+kind: KameletSource
+metadata:
+  name: kamelet-source
+  namespace: knative-samples
+spec:
+  type: "timer-source"
+  text: "Hello receiver 2"
+  sink:
+    ref:
+      apiVersion: eventing.knative.dev/v1
+      kind: Broker
+      name: default-2
+EOF
+```
 
-To learn more about Knative, please visit our
-[Knative docs](https://github.com/knative/docs) repository.
-
-If you are interested in contributing, see [CONTRIBUTING.md](./CONTRIBUTING.md)
-and [DEVELOPMENT.md](./DEVELOPMENT.md).
+Note: requires knative and `pre-setup` manifest
