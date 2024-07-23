@@ -2,7 +2,7 @@
 
 This doc explains how to setup a development environment so you can get started
 [contributing](https://www.knative.dev/contributing/) to Knative
-`sample-source`. Also take a look at:
+`kamelet-source`. Also take a look at:
 
 - [The pull request workflow](https://knative.dev/community/contributing/reviewing/)
 
@@ -21,7 +21,7 @@ Before submitting a PR, see also [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 You must install these tools:
 
-1. [`go`](https://golang.org/doc/install): The language Knative `sample-source`
+1. [`go`](https://golang.org/doc/install): The language Knative `kamelet-source`
    is built in
 1. [`git`](https://help.github.com/articles/set-up-git/): For source control
 
@@ -46,7 +46,7 @@ export PATH="${PATH}:${GOPATH}/bin"
 ### Checkout your fork
 
 The Go tools require that you clone the repository to the
-`src/knative.dev/sample-source` directory in your
+`src/knative.dev/kamelet-source` directory in your
 [`GOPATH`](https://github.com/golang/go/wiki/SettingGOPATH).
 
 To check out this repository:
@@ -59,9 +59,9 @@ To check out this repository:
 ```shell
 mkdir -p ${GOPATH}/src/knative.dev
 cd ${GOPATH}/src/knative.dev
-git clone git@github.com:${YOUR_GITHUB_USERNAME}/sample-source.git
-cd sample-source
-git remote add upstream https://github.com/knative/sample-source.git
+git clone git@github.com:${YOUR_GITHUB_USERNAME}/kamelet-source.git
+cd kamelet-source
+git remote add upstream https://github.com/knative/kamelet-source.git
 git remote set-url --push upstream no_push
 ```
 

@@ -24,8 +24,8 @@ import (
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
-	v1alpha1 "knative.dev/sample-source/pkg/client/informers/externalversions/samples/v1alpha1"
-	filtered "knative.dev/sample-source/pkg/client/injection/informers/factory/filtered"
+	v1alpha1 "knative.dev/kamelet-source/pkg/client/informers/externalversions/samples/v1alpha1"
+	filtered "knative.dev/kamelet-source/pkg/client/injection/informers/factory/filtered"
 )
 
 func init() {
@@ -47,7 +47,7 @@ func withInformer(ctx context.Context) (context.Context, []controller.Informer) 
 	infs := []controller.Informer{}
 	for _, selector := range labelSelectors {
 		f := filtered.Get(ctx, selector)
-		inf := f.Samples().V1alpha1().SampleSources()
+		inf := f.Samples().V1alpha1().KameletSources()
 		ctx = context.WithValue(ctx, Key{Selector: selector}, inf)
 		infs = append(infs, inf.Informer())
 	}
@@ -55,11 +55,11 @@ func withInformer(ctx context.Context) (context.Context, []controller.Informer) 
 }
 
 // Get extracts the typed informer from the context.
-func Get(ctx context.Context, selector string) v1alpha1.SampleSourceInformer {
+func Get(ctx context.Context, selector string) v1alpha1.KameletSourceInformer {
 	untyped := ctx.Value(Key{Selector: selector})
 	if untyped == nil {
 		logging.FromContext(ctx).Panicf(
-			"Unable to fetch knative.dev/sample-source/pkg/client/informers/externalversions/samples/v1alpha1.SampleSourceInformer with selector %s from context.", selector)
+			"Unable to fetch knative.dev/kamelet-source/pkg/client/informers/externalversions/samples/v1alpha1.KameletSourceInformer with selector %s from context.", selector)
 	}
-	return untyped.(v1alpha1.SampleSourceInformer)
+	return untyped.(v1alpha1.KameletSourceInformer)
 }

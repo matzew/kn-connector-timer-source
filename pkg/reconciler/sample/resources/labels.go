@@ -17,14 +17,14 @@ limitations under the License.
 package resources
 
 const (
-	// controllerAgentName is the string used by this controller to identify
-	// itself when creating events.
-	controllerAgentName = "sample-source-controller"
+	controllerAgentName = "kamelet-source-controller"
 )
 
 func Labels(name string) map[string]string {
 	return map[string]string{
-		"knative-eventing-source":      controllerAgentName,
-		"knative-eventing-source-name": name,
+
+		"app.kubernetes.io/name":         name,
+		"app.kubernetes.io/version":      "1.0-SNAPSHOT",
+		"eventing.knative.dev/connector": "timer-source",
 	}
 }

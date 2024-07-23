@@ -26,26 +26,26 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestSampleSourceDefaults(t *testing.T) {
+func TestKameletSourceDefaults(t *testing.T) {
 	testCases := map[string]struct {
-		initial  SampleSource
-		expected SampleSource
+		initial  KameletSource
+		expected KameletSource
 	}{
 		"nil spec": {
-			initial: SampleSource{},
-			expected: SampleSource{
-				Spec: SampleSourceSpec{
+			initial: KameletSource{},
+			expected: KameletSource{
+				Spec: KameletSourceSpec{
 					ServiceAccountName: "default",
 					Interval:           "10s",
 				},
 			},
 		},
 		"no namespace in sink reference": {
-			initial: SampleSource{
+			initial: KameletSource{
 				ObjectMeta: v1.ObjectMeta{
 					Namespace: "parent",
 				},
-				Spec: SampleSourceSpec{
+				Spec: KameletSourceSpec{
 					ServiceAccountName: "default",
 					Interval:           "10s",
 					SourceSpec: duckv1.SourceSpec{
@@ -55,11 +55,11 @@ func TestSampleSourceDefaults(t *testing.T) {
 					},
 				},
 			},
-			expected: SampleSource{
+			expected: KameletSource{
 				ObjectMeta: v1.ObjectMeta{
 					Namespace: "parent",
 				},
-				Spec: SampleSourceSpec{
+				Spec: KameletSourceSpec{
 					ServiceAccountName: "default",
 					Interval:           "10s",
 					SourceSpec: duckv1.SourceSpec{

@@ -21,15 +21,15 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "knative.dev/sample-source/pkg/client/clientset/versioned/typed/samples/v1alpha1"
+	v1alpha1 "knative.dev/kamelet-source/pkg/client/clientset/versioned/typed/samples/v1alpha1"
 )
 
 type FakeSamplesV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeSamplesV1alpha1) SampleSources(namespace string) v1alpha1.SampleSourceInterface {
-	return &FakeSampleSources{c, namespace}
+func (c *FakeSamplesV1alpha1) KameletSources(namespace string) v1alpha1.KameletSourceInterface {
+	return &FakeKameletSources{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

@@ -24,8 +24,8 @@ import (
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
-	factoryfiltered "knative.dev/sample-source/pkg/client/injection/informers/factory/filtered"
-	filtered "knative.dev/sample-source/pkg/client/injection/informers/samples/v1alpha1/samplesource/filtered"
+	factoryfiltered "knative.dev/kamelet-source/pkg/client/injection/informers/factory/filtered"
+	filtered "knative.dev/kamelet-source/pkg/client/injection/informers/samples/v1alpha1/kameletsource/filtered"
 )
 
 var Get = filtered.Get
@@ -44,7 +44,7 @@ func withInformer(ctx context.Context) (context.Context, []controller.Informer) 
 	infs := []controller.Informer{}
 	for _, selector := range labelSelectors {
 		f := factoryfiltered.Get(ctx, selector)
-		inf := f.Samples().V1alpha1().SampleSources()
+		inf := f.Samples().V1alpha1().KameletSources()
 		ctx = context.WithValue(ctx, filtered.Key{Selector: selector}, inf)
 		infs = append(infs, inf.Informer())
 	}

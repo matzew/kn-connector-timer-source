@@ -22,12 +22,12 @@ import (
 	context "context"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	externalversions "knative.dev/kamelet-source/pkg/client/informers/externalversions"
+	fake "knative.dev/kamelet-source/pkg/client/injection/client/fake"
+	filtered "knative.dev/kamelet-source/pkg/client/injection/informers/factory/filtered"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
-	externalversions "knative.dev/sample-source/pkg/client/informers/externalversions"
-	fake "knative.dev/sample-source/pkg/client/injection/client/fake"
-	filtered "knative.dev/sample-source/pkg/client/injection/informers/factory/filtered"
 )
 
 var Get = filtered.Get

@@ -27,14 +27,14 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-func TestSampleSourceValidation(t *testing.T) {
+func TestKameletSourceValidation(t *testing.T) {
 	testCases := map[string]struct {
 		cr   resourcesemantics.GenericCRD
 		want *apis.FieldError
 	}{
 		"nil spec": {
-			cr: &SampleSource{
-				Spec: SampleSourceSpec{},
+			cr: &KameletSource{
+				Spec: KameletSourceSpec{},
 			},
 			want: func() *apis.FieldError {
 				var errs *apis.FieldError

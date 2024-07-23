@@ -34,17 +34,17 @@ import (
 	"knative.dev/pkg/webhook/resourcesemantics/defaulting"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
 
-	"knative.dev/sample-source/pkg/apis/samples/v1alpha1"
+	"knative.dev/kamelet-source/pkg/apis/samples/v1alpha1"
 )
 
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
 	// List the types to validate
-	v1alpha1.SchemeGroupVersion.WithKind("SampleSource"): &v1alpha1.SampleSource{},
+	v1alpha1.SchemeGroupVersion.WithKind("KameletSource"): &v1alpha1.KameletSource{},
 }
 
 var callbacks = map[schema.GroupVersionKind]validation.Callback{}
 
-const admissionWebhookName = "sample-source-webhook"
+const admissionWebhookName = "kamelet-source-webhook"
 
 // NewDefaultingAdmissionController sets up mutating webhook.
 func NewDefaultingAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {

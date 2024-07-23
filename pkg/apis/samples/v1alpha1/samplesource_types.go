@@ -30,42 +30,42 @@ import (
 // +genclient
 // +genreconciler
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-type SampleSource struct {
+type KameletSource struct {
 	metav1.TypeMeta `json:",inline"`
 	// +optional
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	// Spec holds the desired state of the SampleSource (from the client).
-	Spec SampleSourceSpec `json:"spec"`
+	// Spec holds the desired state of the KameletSource (from the client).
+	Spec KameletSourceSpec `json:"spec"`
 
-	// Status communicates the observed state of the SampleSource (from the controller).
+	// Status communicates the observed state of the KameletSource (from the controller).
 	// +optional
-	Status SampleSourceStatus `json:"status,omitempty"`
+	Status KameletSourceStatus `json:"status,omitempty"`
 }
 
 // GetGroupVersionKind returns the GroupVersionKind.
-func (*SampleSource) GetGroupVersionKind() schema.GroupVersionKind {
-	return SchemeGroupVersion.WithKind("SampleSource")
+func (*KameletSource) GetGroupVersionKind() schema.GroupVersionKind {
+	return SchemeGroupVersion.WithKind("KameletSource")
 }
 
 var (
-	// Check that SampleSource can be validated and defaulted.
-	_ apis.Validatable = (*SampleSource)(nil)
-	_ apis.Defaultable = (*SampleSource)(nil)
-	// Check that we can create OwnerReferences to a SampleSource.
-	_ kmeta.OwnerRefable = (*SampleSource)(nil)
-	// Check that SampleSource is a runtime.Object.
-	_ runtime.Object = (*SampleSource)(nil)
-	// Check that SampleSource satisfies resourcesemantics.GenericCRD.
-	_ resourcesemantics.GenericCRD = (*SampleSource)(nil)
-	// Check that SampleSource implements the Conditions duck type.
-	_ = duck.VerifyType(&SampleSource{}, &duckv1.Conditions{})
+	// Check that KameletSource can be validated and defaulted.
+	_ apis.Validatable = (*KameletSource)(nil)
+	_ apis.Defaultable = (*KameletSource)(nil)
+	// Check that we can create OwnerReferences to a KameletSource.
+	_ kmeta.OwnerRefable = (*KameletSource)(nil)
+	// Check that KameletSource is a runtime.Object.
+	_ runtime.Object = (*KameletSource)(nil)
+	// Check that KameletSource satisfies resourcesemantics.GenericCRD.
+	_ resourcesemantics.GenericCRD = (*KameletSource)(nil)
+	// Check that KameletSource implements the Conditions duck type.
+	_ = duck.VerifyType(&KameletSource{}, &duckv1.Conditions{})
 	// Check that the type conforms to the duck Knative Resource shape.
-	_ duckv1.KRShaped = (*SampleSource)(nil)
+	_ duckv1.KRShaped = (*KameletSource)(nil)
 )
 
-// SampleSourceSpec holds the desired state of the SampleSource (from the client).
-type SampleSourceSpec struct {
+// KameletSourceSpec holds the desired state of the KameletSource (from the client).
+type KameletSourceSpec struct {
 	// inherits duck/v1 SourceSpec, which currently provides:
 	// * Sink - a reference to an object that will resolve to a domain name or
 	//   a URI directly to use as the sink.
@@ -76,7 +76,7 @@ type SampleSourceSpec struct {
 	// ServiceAccountName holds the name of the Kubernetes service account
 	// as which the underlying K8s resources should be run. If unspecified
 	// this will default to the "default" service account for the namespace
-	// in which the SampleSource exists.
+	// in which the KameletSource exists.
 	// +optional
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 
@@ -87,16 +87,18 @@ type SampleSourceSpec struct {
 	// units are "ns", "us" (or "µs"), "ms", "s", "m", "h". If unspecified
 	// this will default to "10s".
 	Interval string `json:"interval"`
+	Type     string `json:"type"`
+	Text     string `json:"text"`
 }
 
 const (
-	// SampleSourceConditionReady is set when the revision is starting to materialize
+	// KameletSourceConditionReady is set when the revision is starting to materialize
 	// runtime resources, and becomes true when those resources are ready.
-	SampleSourceConditionReady = apis.ConditionReady
+	KameletSourceConditionReady = apis.ConditionReady
 )
 
-// SampleSourceStatus communicates the observed state of the SampleSource (from the controller).
-type SampleSourceStatus struct {
+// KameletSourceStatus communicates the observed state of the KameletSource (from the controller).
+type KameletSourceStatus struct {
 	// inherits duck/v1 SourceStatus, which currently provides:
 	// * ObservedGeneration - the 'Generation' of the Service that was last
 	//   processed by the controller.
@@ -109,15 +111,15 @@ type SampleSourceStatus struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// SampleSourceList is a list of SampleSource resources
-type SampleSourceList struct {
+// KameletSourceList is a list of KameletSource resources
+type KameletSourceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
 
-	Items []SampleSource `json:"items"`
+	Items []KameletSource `json:"items"`
 }
 
 // GetStatus retrieves the status of the resource. Implements the KRShaped interface.
-func (ss *SampleSource) GetStatus() *duckv1.Status {
+func (ss *KameletSource) GetStatus() *duckv1.Status {
 	return &ss.Status.Status
 }

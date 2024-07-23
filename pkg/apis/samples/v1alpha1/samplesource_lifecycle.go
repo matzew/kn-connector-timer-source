@@ -23,13 +23,13 @@ import (
 )
 
 const (
-	// SampleConditionReady has status True when the SampleSource is ready to send events.
+	// SampleConditionReady has status True when the KameletSource is ready to send events.
 	SampleConditionReady = apis.ConditionReady
 
-	// SampleConditionSinkProvided has status True when the SampleSource has been configured with a sink target.
+	// SampleConditionSinkProvided has status True when the KameletSource has been configured with a sink target.
 	SampleConditionSinkProvided apis.ConditionType = "SinkProvided"
 
-	// SampleConditionDeployed has status True when the SampleSource has had it's deployment created.
+	// SampleConditionDeployed has status True when the KameletSource has had it's deployment created.
 	SampleConditionDeployed apis.ConditionType = "Deployed"
 )
 
@@ -39,22 +39,22 @@ var SampleCondSet = apis.NewLivingConditionSet(
 )
 
 // GetCondition returns the condition currently associated with the given type, or nil.
-func (s *SampleSourceStatus) GetCondition(t apis.ConditionType) *apis.Condition {
+func (s *KameletSourceStatus) GetCondition(t apis.ConditionType) *apis.Condition {
 	return SampleCondSet.Manage(s).GetCondition(t)
 }
 
 // InitializeConditions sets relevant unset conditions to Unknown state.
-func (s *SampleSourceStatus) InitializeConditions() {
+func (s *KameletSourceStatus) InitializeConditions() {
 	SampleCondSet.Manage(s).InitializeConditions()
 }
 
-// GetConditionSet returns SampleSource ConditionSet.
-func (*SampleSource) GetConditionSet() apis.ConditionSet {
+// GetConditionSet returns KameletSource ConditionSet.
+func (*KameletSource) GetConditionSet() apis.ConditionSet {
 	return SampleCondSet
 }
 
 // MarkSink sets the condition that the source has a sink configured.
-func (s *SampleSourceStatus) MarkSink(uri *apis.URL) {
+func (s *KameletSourceStatus) MarkSink(uri *apis.URL) {
 	s.SinkURI = uri
 	if len(uri.String()) > 0 {
 		SampleCondSet.Manage(s).MarkTrue(SampleConditionSinkProvided)
@@ -64,13 +64,13 @@ func (s *SampleSourceStatus) MarkSink(uri *apis.URL) {
 }
 
 // MarkNoSink sets the condition that the source does not have a sink configured.
-func (s *SampleSourceStatus) MarkNoSink(reason, messageFormat string, messageA ...interface{}) {
+func (s *KameletSourceStatus) MarkNoSink(reason, messageFormat string, messageA ...interface{}) {
 	SampleCondSet.Manage(s).MarkFalse(SampleConditionSinkProvided, reason, messageFormat, messageA...)
 }
 
 // PropagateDeploymentAvailability uses the availability of the provided Deployment to determine if
 // SampleConditionDeployed should be marked as true or false.
-func (s *SampleSourceStatus) PropagateDeploymentAvailability(d *appsv1.Deployment) {
+func (s *KameletSourceStatus) PropagateDeploymentAvailability(d *appsv1.Deployment) {
 	if duck.DeploymentIsAvailable(&d.Status, false) {
 		SampleCondSet.Manage(s).MarkTrue(SampleConditionDeployed)
 	} else {
@@ -81,6 +81,6 @@ func (s *SampleSourceStatus) PropagateDeploymentAvailability(d *appsv1.Deploymen
 }
 
 // IsReady returns true if the resource is ready overall.
-func (s *SampleSourceStatus) IsReady() bool {
+func (s *KameletSourceStatus) IsReady() bool {
 	return SampleCondSet.Manage(s).IsHappy()
 }

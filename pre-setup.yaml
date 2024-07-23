@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kamelet-receiver-function-one
+  namespace: knative-samples
+spec:
+  selector:
+    app: kamelet-receiver-function-one
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http
+      name: http
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kamelet-receiver-function-one
+  namespace: knative-samples
+  labels:
+    app: kamelet-receiver-function-one
+spec:
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: kamelet-receiver-function-one
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      image: registry.ci.openshift.org/openshift/knative-eventing-event-display:knative-nightly
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+          name: http
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default-one
+  namespace: knative-samples
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-one
+  namespace: knative-samples
+spec:
+  broker: default-one
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: kamelet-receiver-function-one
+---
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kamelet-receiver-function-2
+  namespace: knative-samples
+spec:
+  selector:
+    app: kamelet-receiver-function-2
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http
+      name: http
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kamelet-receiver-function-2
+  namespace: knative-samples
+  labels:
+    app: kamelet-receiver-function-2
+spec:
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: kamelet-receiver-function-2
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      image: registry.ci.openshift.org/openshift/knative-eventing-event-display:knative-nightly
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+          name: http
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default-2
+  namespace: knative-samples
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-2
+  namespace: knative-samples
+spec:
+  broker: default-2
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: kamelet-receiver-function-2
+---
+
+
+

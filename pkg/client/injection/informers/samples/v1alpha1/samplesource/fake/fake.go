@@ -23,11 +23,11 @@ import (
 
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
-	fake "knative.dev/sample-source/pkg/client/injection/informers/factory/fake"
-	samplesource "knative.dev/sample-source/pkg/client/injection/informers/samples/v1alpha1/samplesource"
+	fake "knative.dev/kamelet-source/pkg/client/injection/informers/factory/fake"
+	kameletsource "knative.dev/kamelet-source/pkg/client/injection/informers/samples/v1alpha1/kameletsource"
 )
 
-var Get = samplesource.Get
+var Get = kameletsource.Get
 
 func init() {
 	injection.Fake.RegisterInformer(withInformer)
@@ -35,6 +35,6 @@ func init() {
 
 func withInformer(ctx context.Context) (context.Context, controller.Informer) {
 	f := fake.Get(ctx)
-	inf := f.Samples().V1alpha1().SampleSources()
-	return context.WithValue(ctx, samplesource.Key{}, inf), inf.Informer()
+	inf := f.Samples().V1alpha1().KameletSources()
+	return context.WithValue(ctx, kameletsource.Key{}, inf), inf.Informer()
 }

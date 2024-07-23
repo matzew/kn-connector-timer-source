@@ -47,12 +47,12 @@ type DeploymentReconciler struct {
 	KubeClientSet kubernetes.Interface
 }
 
-// ReconcileDeployment reconciles deployment resource for SampleSource
-func (r *DeploymentReconciler) ReconcileDeployment(
-	ctx context.Context,
+// ReconcileDeployment reconciles deployment resource for KameletSource
+func (r *DeploymentReconciler) ReconcileDeployment(ctx context.Context,
 	owner kmeta.OwnerRefable,
 	binder *sourcesv1.SinkBinding,
 	expected *appsv1.Deployment,
+	service *corev1.Service,
 ) (*appsv1.Deployment, *sourcesv1.SinkBinding, pkgreconciler.Event) {
 	namespace := owner.GetObjectMeta().GetNamespace()
 	ra, err := r.KubeClientSet.AppsV1().Deployments(namespace).Get(ctx, expected.Name, metav1.GetOptions{})
@@ -62,6 +62,9 @@ func (r *DeploymentReconciler) ReconcileDeployment(
 		if err != nil {
 			return nil, binder, newDeploymentFailed(expected.Namespace, expected.Name, err)
 		}
+
+		_, _ = r.KubeClientSet.CoreV1().Services(namespace).Create(ctx, service, metav1.CreateOptions{})
+
 		return ra, binder, newDeploymentCreated(ra.Namespace, ra.Name)
 	} else if err != nil {
 		return nil, binder, fmt.Errorf("error getting receive adapter %q: %v", expected.Name, err)

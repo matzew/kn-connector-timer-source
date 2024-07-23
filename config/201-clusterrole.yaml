@@ -15,7 +15,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: sample-source-controller
+  name: kamelet-source-controller
   labels:
     samples.knative.dev/release: devel
 rules:
@@ -31,6 +31,30 @@ rules:
   - update
   - patch
   - delete
+- apiGroups:
+    - ""
+  resources:
+    - services
+  verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+
+- apiGroups:
+    - "sources.knative.dev"
+  resources:
+    - sinkbindings
+  verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+
 
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -48,14 +72,14 @@ rules:
 - apiGroups:
   - samples.knative.dev
   resources:
-  - samplesources
+  - kameletsources
   verbs: *everything
 
 - apiGroups:
   - samples.knative.dev
   resources:
-  - samplesources/status
-  - samplesources/finalizers
+  - kameletsources/status
+  - kameletsources/finalizers
   verbs:
   - get
   - update
@@ -84,7 +108,7 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: sample-source-observer
+  name: kamelet-source-observer
   labels:
     samples.knative.dev/release: devel
     duck.knative.dev/source: "true"
@@ -92,7 +116,7 @@ rules:
   - apiGroups:
       - "sources.eventing.knative.dev"
     resources:
-      - "samplesources"
+      - "kameletsources"
     verbs:
       - get
       - list

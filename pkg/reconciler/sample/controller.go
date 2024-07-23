@@ -18,10 +18,11 @@ package sample
 
 import (
 	"context"
+	"knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 
 	reconcilersource "knative.dev/eventing/pkg/reconciler/source"
 
-	"knative.dev/sample-source/pkg/apis/samples/v1alpha1"
+	"knative.dev/kamelet-source/pkg/apis/samples/v1alpha1"
 
 	"github.com/kelseyhightower/envconfig"
 	"k8s.io/client-go/tools/cache"
@@ -31,12 +32,15 @@ import (
 	"knative.dev/pkg/logging"
 	"knative.dev/pkg/resolver"
 
-	"knative.dev/sample-source/pkg/reconciler"
+	eventingclient "knative.dev/eventing/pkg/client/injection/client"
+	sinkbindinginformer "knative.dev/eventing/pkg/client/injection/informers/sources/v1/sinkbinding"
 
+	"knative.dev/kamelet-source/pkg/reconciler"
+
+	kameletsourceinformer "knative.dev/kamelet-source/pkg/client/injection/informers/samples/v1alpha1/kameletsource"
+	"knative.dev/kamelet-source/pkg/client/injection/reconciler/samples/v1alpha1/kameletsource"
 	kubeclient "knative.dev/pkg/client/injection/kube/client"
 	deploymentinformer "knative.dev/pkg/client/injection/kube/informers/apps/v1/deployment"
-	samplesourceinformer "knative.dev/sample-source/pkg/client/injection/informers/samples/v1alpha1/samplesource"
-	"knative.dev/sample-source/pkg/client/injection/reconciler/samples/v1alpha1/samplesource"
 )
 
 // NewController initializes the controller and is called by the generated code
@@ -45,26 +49,39 @@ func NewController(
 	ctx context.Context,
 	cmw configmap.Watcher,
 ) *controller.Impl {
+
+	kubeClient := kubeclient.Get(ctx)
+	eventingClient := eventingclient.Get(ctx)
+	sinkbindingInformer := sinkbindinginformer.Get(ctx)
+
+	serviceInformer := service.Get(ctx)
 	deploymentInformer := deploymentinformer.Get(ctx)
-	sampleSourceInformer := samplesourceinformer.Get(ctx)
+
+	kameletSourceInformer := kameletsourceinformer.Get(ctx)
 
 	r := &Reconciler{
-		dr: &reconciler.DeploymentReconciler{KubeClientSet: kubeclient.Get(ctx)},
-		// Config accessor takes care of tracing/config/logging config propagation to the receive adapter
-		configAccessor: reconcilersource.WatchConfigurations(ctx, "sample-source", cmw),
+
+		kubeClientSet:     kubeClient,
+		eventingclientset: eventingClient,
+		sinkBindingLister: sinkbindingInformer.Lister(),
+		deploymentLister:  deploymentInformer.Lister(),
+		serviceLister:     serviceInformer.Lister(),
+
+		dr:             &reconciler.DeploymentReconciler{KubeClientSet: kubeclient.Get(ctx)},
+		configAccessor: reconcilersource.WatchConfigurations(ctx, "kamelet-source", cmw),
 	}
 	if err := envconfig.Process("", r); err != nil {
 		logging.FromContext(ctx).Panicf("required environment variable is not defined: %v", err)
 	}
 
-	impl := samplesource.NewImpl(ctx, r)
+	impl := kameletsource.NewImpl(ctx, r)
 
 	r.sinkResolver = resolver.NewURIResolverFromTracker(ctx, impl.Tracker)
 
-	sampleSourceInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
+	kameletSourceInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
 
 	deploymentInformer.Informer().AddEventHandler(cache.FilteringResourceEventHandler{
-		FilterFunc: controller.FilterController(&v1alpha1.SampleSource{}),
+		FilterFunc: controller.FilterController(&v1alpha1.KameletSource{}),
 		Handler:    controller.HandleAll(impl.EnqueueControllerOf),
 	})
 

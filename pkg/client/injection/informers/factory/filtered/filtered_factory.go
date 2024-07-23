@@ -22,11 +22,11 @@ import (
 	context "context"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	externalversions "knative.dev/kamelet-source/pkg/client/informers/externalversions"
+	client "knative.dev/kamelet-source/pkg/client/injection/client"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
-	externalversions "knative.dev/sample-source/pkg/client/informers/externalversions"
-	client "knative.dev/sample-source/pkg/client/injection/client"
 )
 
 func init() {
@@ -72,7 +72,7 @@ func Get(ctx context.Context, selector string) externalversions.SharedInformerFa
 	untyped := ctx.Value(Key{Selector: selector})
 	if untyped == nil {
 		logging.FromContext(ctx).Panicf(
-			"Unable to fetch knative.dev/sample-source/pkg/client/informers/externalversions.SharedInformerFactory with selector %s from context.", selector)
+			"Unable to fetch knative.dev/kamelet-source/pkg/client/informers/externalversions.SharedInformerFactory with selector %s from context.", selector)
 	}
 	return untyped.(externalversions.SharedInformerFactory)
 }

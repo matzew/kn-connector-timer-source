@@ -23,8 +23,8 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-// Validate validates SampleSource.
-func (s *SampleSource) Validate(ctx context.Context) *apis.FieldError {
+// Validate validates KameletSource.
+func (s *KameletSource) Validate(ctx context.Context) *apis.FieldError {
 	var errs *apis.FieldError
 
 	//example: validation for "spec" field.
@@ -34,9 +34,9 @@ func (s *SampleSource) Validate(ctx context.Context) *apis.FieldError {
 	return errs
 }
 
-// Validate validates SampleSourceSpec.
-func (sspec *SampleSourceSpec) Validate(ctx context.Context) *apis.FieldError {
-	//Add code for validation webhook for SampleSourceSpec.
+// Validate validates KameletSourceSpec.
+func (sspec *KameletSourceSpec) Validate(ctx context.Context) *apis.FieldError {
+	//Add code for validation webhook for KameletSourceSpec.
 	var errs *apis.FieldError
 
 	//example: validation for sink field.

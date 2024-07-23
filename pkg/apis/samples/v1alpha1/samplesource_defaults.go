@@ -22,8 +22,8 @@ import (
 	"knative.dev/pkg/apis"
 )
 
-// SetDefaults mutates SampleSource.
-func (s *SampleSource) SetDefaults(ctx context.Context) {
+// SetDefaults mutates KameletSource.
+func (s *KameletSource) SetDefaults(ctx context.Context) {
 	//Add code for Mutating admission webhook.
 
 	//example: If ServiceAccountName is unspecified, default to the "default" service account.
@@ -36,7 +36,7 @@ func (s *SampleSource) SetDefaults(ctx context.Context) {
 		s.Spec.Interval = "10s"
 	}
 
-	// call SetDefaults against duckv1.Destination with a context of ObjectMeta of SampleSource.
+	// call SetDefaults against duckv1.Destination with a context of ObjectMeta of KameletSource.
 	withNS := apis.WithinParent(ctx, s.ObjectMeta)
 	s.Spec.Sink.SetDefaults(withNS)
 }

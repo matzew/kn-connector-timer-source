@@ -24,7 +24,7 @@ metadata:
       [
         { "type": "dev.knative.sample" }
       ]
-  name: samplesources.samples.knative.dev
+  name: kameletsources.samples.knative.dev
 spec:
   group: samples.knative.dev
   versions:
@@ -61,6 +61,6 @@ spec:
     - knative
     - eventing
     - sources
-    kind: SampleSource
-    plural: samplesources
+    kind: KameletSource
+    plural: kameletsources
   scope: Namespaced

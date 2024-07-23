@@ -17,34 +17,33 @@ limitations under the License.
 package resources
 
 import (
-	"fmt"
-
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/kmeta"
 
-	"knative.dev/sample-source/pkg/apis/samples/v1alpha1"
+	"knative.dev/kamelet-source/pkg/apis/samples/v1alpha1"
 )
 
 // ReceiveAdapterArgs are the arguments needed to create a Sample Source Receive Adapter.
 // Every field is required.
 type ReceiveAdapterArgs struct {
-	Image          string
+	//Image          string
 	Labels         map[string]string
-	Source         *v1alpha1.SampleSource
+	Source         *v1alpha1.KameletSource
 	EventSource    string
 	AdditionalEnvs []corev1.EnvVar
+	Address        string
 }
 
-// MakeReceiveAdapter generates (but does not insert into K8s) the Receive Adapter Deployment for
+// MakeDeployment generates (but does not insert into K8s) the Receive Adapter Deployment for
 // Sample sources.
-func MakeReceiveAdapter(args *ReceiveAdapterArgs) *v1.Deployment {
+func MakeDeployment(args *ReceiveAdapterArgs) *v1.Deployment {
 	replicas := int32(1)
 	return &v1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: args.Source.Namespace,
-			Name:      kmeta.ChildName(fmt.Sprintf("samplesource-%s-", args.Source.Name), string(args.Source.GetUID())),
+			Name:      args.Source.Name,
 			Labels:    args.Labels,
 			OwnerReferences: []metav1.OwnerReference{
 				*kmeta.NewControllerRef(args.Source),
@@ -63,10 +62,14 @@ func MakeReceiveAdapter(args *ReceiveAdapterArgs) *v1.Deployment {
 					ServiceAccountName: args.Source.Spec.ServiceAccountName,
 					Containers: []corev1.Container{
 						{
-							Name:  "receive-adapter",
-							Image: args.Image,
+							Name:  args.Source.Name,
+							Image: "quay.io/openshift-knative/kn-connector-source-timer:1.0-SNAPSHOT",
+							Ports: []corev1.ContainerPort{{
+								Name:          "http",
+								ContainerPort: 8080,
+							}},
 							Env: append(
-								makeEnv(args.EventSource, &args.Source.Spec),
+								makeEnv(args.Address, &args.Source.Spec),
 								args.AdditionalEnvs...,
 							),
 						},
@@ -76,30 +79,14 @@ func MakeReceiveAdapter(args *ReceiveAdapterArgs) *v1.Deployment {
 		},
 	}
 }
-
-func makeEnv(eventSource string, spec *v1alpha1.SampleSourceSpec) []corev1.EnvVar {
+func makeEnv(address string, spec *v1alpha1.KameletSourceSpec) []corev1.EnvVar {
 	return []corev1.EnvVar{{
-		Name:  "EVENT_SOURCE",
-		Value: eventSource,
+		Name:  "K_SINK",
+		Value: address, //"http://broker-ingress.knative-eventing.svc.cluster.local/knative-samples/default",
 	}, {
-		Name:  "INTERVAL",
-		Value: spec.Interval,
+		Name:  "CAMEL_KAMELET_TIMER_SOURCE_MESSAGE",
+		Value: spec.Text,
 	}, {
-		Name: "NAMESPACE",
-		ValueFrom: &corev1.EnvVarSource{
-			FieldRef: &corev1.ObjectFieldSelector{
-				FieldPath: "metadata.namespace",
-			},
-		},
-	}, {
-		Name: "NAME",
-		ValueFrom: &corev1.EnvVarSource{
-			FieldRef: &corev1.ObjectFieldSelector{
-				FieldPath: "metadata.name",
-			},
-		},
-	}, {
-		Name:  "METRICS_DOMAIN",
-		Value: "knative.dev/eventing",
+		Name: "K_CE_OVERRIDES",
 	}}
 }

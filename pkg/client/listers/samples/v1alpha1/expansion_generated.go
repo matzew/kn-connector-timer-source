@@ -18,10 +18,10 @@ limitations under the License.
 
 package v1alpha1
 
-// SampleSourceListerExpansion allows custom methods to be added to
-// SampleSourceLister.
-type SampleSourceListerExpansion interface{}
+// KameletSourceListerExpansion allows custom methods to be added to
+// KameletSourceLister.
+type KameletSourceListerExpansion interface{}
 
-// SampleSourceNamespaceListerExpansion allows custom methods to be added to
-// SampleSourceNamespaceLister.
-type SampleSourceNamespaceListerExpansion interface{}
+// KameletSourceNamespaceListerExpansion allows custom methods to be added to
+// KameletSourceNamespaceLister.
+type KameletSourceNamespaceListerExpansion interface{}
