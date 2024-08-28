@@ -31,10 +31,10 @@ func (s *KameletSource) SetDefaults(ctx context.Context) {
 		s.Spec.ServiceAccountName = "default"
 	}
 
-	//example: If Interval is unspecified, default to "10s".
-	if s != nil && s.Spec.Interval == "" {
-		s.Spec.Interval = "10s"
-	}
+	////example: If Interval is unspecified, default to "10s".
+	//if s != nil && s.Spec.Interval == "" {
+	//	s.Spec.Interval = "10s"
+	//}
 
 	// call SetDefaults against duckv1.Destination with a context of ObjectMeta of KameletSource.
 	withNS := apis.WithinParent(ctx, s.ObjectMeta)

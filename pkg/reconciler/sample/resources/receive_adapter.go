@@ -21,6 +21,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/kmeta"
+	"strings"
 
 	"knative.dev/kamelet-source/pkg/apis/samples/v1alpha1"
 )
@@ -79,14 +80,25 @@ func MakeDeployment(args *ReceiveAdapterArgs) *v1.Deployment {
 		},
 	}
 }
+
 func makeEnv(address string, spec *v1alpha1.KameletSourceSpec) []corev1.EnvVar {
-	return []corev1.EnvVar{{
-		Name:  "K_SINK",
-		Value: address, //"http://broker-ingress.knative-eventing.svc.cluster.local/knative-samples/default",
-	}, {
-		Name:  "CAMEL_KAMELET_TIMER_SOURCE_MESSAGE",
-		Value: spec.Text,
-	}, {
-		Name: "K_CE_OVERRIDES",
-	}}
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "K_SINK",
+			Value: address,
+		},
+		{
+			Name: "K_CE_OVERRIDES",
+		},
+	}
+
+	// Add environment variables from properties with uppercase keys and prefix
+	for key, value := range spec.Properties {
+		envVarName := "CAMEL_KAMELET_" + strings.ToUpper(spec.Type) + "_SOURCE_" + strings.ToUpper(key)
+		envVars = append(envVars, corev1.EnvVar{
+			Name:  envVarName,
+			Value: value,
+		})
+	}
+	return envVars
 }

@@ -86,9 +86,13 @@ type KameletSourceSpec struct {
 	// fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time
 	// units are "ns", "us" (or "µs"), "ms", "s", "m", "h". If unspecified
 	// this will default to "10s".
-	Interval string `json:"interval"`
-	Type     string `json:"type"`
-	Text     string `json:"text"`
+	Type string `json:"type"`
+
+	// Properties are a key/value properties
+	Properties map[string]string `json:"properties"`
+
+	//Interval string `json:"interval"`
+	//Text     string `json:"text"`
 }
 
 const (
