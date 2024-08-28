@@ -4,8 +4,11 @@ metadata:
   name: kamelet-source
   namespace: knative-samples
 spec:
-  type: "timer-source"
-  text: "Hello receiver 2"
+  type: "timer"
+  properties:
+    message: "Hello receiver 2"
+    period: "5s"
+    foo: bar # Causes no harm :-)
   sink:
     ref:
       apiVersion: eventing.knative.dev/v1

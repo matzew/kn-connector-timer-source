@@ -90,6 +90,13 @@ func (in *KameletSourceList) DeepCopyObject() runtime.Object {
 func (in *KameletSourceSpec) DeepCopyInto(out *KameletSourceSpec) {
 	*out = *in
 	in.SourceSpec.DeepCopyInto(&out.SourceSpec)
+	if in.Properties != nil {
+		in, out := &in.Properties, &out.Properties
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	return
 }
 
